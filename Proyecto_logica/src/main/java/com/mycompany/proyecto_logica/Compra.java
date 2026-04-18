@@ -77,15 +77,6 @@ public class Compra {
                                 
                         }
                     }
-                case 3:
-                    
-                case 4:
-                    
-                case 5:
-                    
-                case 4:
-                    
-                    
             }
             
             
