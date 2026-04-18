@@ -6,7 +6,7 @@ package com.mycompany.proyecto_logica;
 
 /**
  *
- * @author Mariana
+ * @author Mariana.
  */
 
 import java.time.LocalDate;
