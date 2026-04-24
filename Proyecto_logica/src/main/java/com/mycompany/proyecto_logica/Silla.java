@@ -19,4 +19,13 @@ public class Silla extends Mueble{
         this.color_tapizado = color_tapizado;
         this.densidad_espuma = densidad_espuma;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + 
+        "Silla: " + 
+        "Material del tapizado: " + material_tapizado + 
+        ". Color del tapizado: " + color_tapizado + 
+        ". Densidad de la espuma: " + densidad_espuma + '}';
+    }
 }
