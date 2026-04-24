@@ -21,4 +21,14 @@ public class Mesa extends Mueble{
         this.dimension_largo = dimension_largo;
         this.material_tapa = material_tapa;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +  
+        "Mesa" + 
+        "Forma de la tapa: " + forma_tapa + 
+        ". Dimension del acnho de la tapa: " + dimension_ancho + 
+        ". Dimension del largo de la tapa:" + dimension_largo + 
+        ". Material de la tapa: " + material_tapa + '}';
+    }
 }
