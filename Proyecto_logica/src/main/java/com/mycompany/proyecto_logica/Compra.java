@@ -8,7 +8,6 @@ package com.mycompany.proyecto_logica;
  *
  * @author Mariana.
  */
-
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
@@ -111,6 +110,67 @@ public class Compra extends JFrame {
         opcion3 = new JMenuItem("Registrar compra.");
         menu.add(opcion3);
 
+        //Acciones de la opcion 3, lo hice con IA porque no sabía como seguir
+        opcion3.addActionListener(e -> {
+            try {
+                String documento = JOptionPane.showInputDialog("Ingrese el numero de documento de identidad:");
+
+                if (!clientes.containsKey(documento)) {
+                    JOptionPane.showMessageDialog(null, "El cliente " + documento + " no existe");
+                    return;
+                }
+
+                Cliente cliente = clientes.get(documento);
+                LocalDate fechaCompra = LocalDate.now();
+
+                int documento_existe = 1;
+                double total = 0;
+
+                while (documento_existe == 1) {
+                    String codigo = JOptionPane.showInputDialog("Ingrese el código del producto:");
+
+                    Mueble prod = null;
+                    for (Mueble m : productos) {
+                        if (m.getCodigo().equals(codigo)) {
+                            prod = m;
+                            break;
+                        }
+                    }
+
+                    if (prod == null) {
+                        JOptionPane.showMessageDialog(null, "El producto no fue encontrado");
+                        continue;
+                    }
+
+                    int cant = Integer.parseInt(JOptionPane.showInputDialog("Cantidad:"));
+
+                    if (prod.getCantidad_unidades() < cant) {
+                        JOptionPane.showMessageDialog(null, "Sin stock");
+                        continue;
+                    }
+
+                    total += prod.getPrecio() * cant;
+
+                    prod.setCantidad_unidades(prod.getCantidad_unidades() - cant);
+
+                    documento_existe = JOptionPane.showConfirmDialog(null,"¿Agregar otro producto?", "Compra",
+                            JOptionPane.YES_NO_OPTION);
+                }
+
+                double pagar = total;
+
+                if (cliente.getFecha_cumpleaños().getMonth() == fechaCompra.getMonth()) {
+                    pagar = total * 0.90;
+                }
+
+                JOptionPane.showMessageDialog(null,
+                        "Total: " + total + "\nA pagar: " + pagar);
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error en compra");
+            }
+        });
+
         opcion4 = new JMenuItem("Mostrar los productos de la tienda.");
         menu.add(opcion4);
 
@@ -133,7 +193,6 @@ public class Compra extends JFrame {
         opcion9.add(submenu91);
         submenu92 = new JMenuItem("Cantidad por tipo de productos.");
         opcion9.add(submenu92);
-
 
         setVisible(true);
         setSize(400, 300);
