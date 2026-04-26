@@ -11,21 +11,21 @@ package com.mycompany.proyecto_logica;
 
 import java.time.LocalDate; //Para importar los meses y hacer el if para el descuento del 10%
 public class Cliente {
-    private String documento_identidad;
+    private int documento_identidad;
     private String nombre;
-    private LocalDate fecha_cumpleaños;
+    private LocalDate fecha_nacimiento;
 
-    public Cliente(String documento_identidad, String nombre, LocalDate fecha_cumpleaños) {
+    public Cliente(int documento_identidad, String nombre, LocalDate fecha_nacimiento) {
         this.documento_identidad = documento_identidad;
         this.nombre = nombre;
-        this.fecha_cumpleaños = fecha_cumpleaños;
+        this.fecha_nacimiento = fecha_nacimiento;
     }
 
-    public String getDocumento_identidad() {
+    public int getDocumento_identidad() {
         return documento_identidad;
     }
 
-    public void setDocumento_identidad(String documento_identidad) {
+    public void setDocumento_identidad(int documento_identidad) {
         this.documento_identidad = documento_identidad;
     }
 
@@ -37,12 +37,12 @@ public class Cliente {
         this.nombre = nombre;
     }
 
-    public LocalDate getFecha_cumpleaños() {
-        return fecha_cumpleaños;
+    public LocalDate getfecha_nacimiento() {
+        return fecha_nacimiento;
     }
 
-    public void setFecha_cumpleaños(LocalDate fecha_cumpleaños) {
-        this.fecha_cumpleaños = fecha_cumpleaños;
+    public void setfecha_nacimiento(LocalDate fecha_nacimiento) {
+        this.fecha_nacimiento = fecha_nacimiento;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class Cliente {
         return "Cliente: " + 
                 "Documento de identidad: " + documento_identidad + 
                 ". Nombre: " + nombre + 
-                ". Fecha de cumpleaños: " + fecha_cumpleaños + '}';
+                ". Fecha de nacimiento: " + fecha_nacimiento + '}';
     }
 
 }
