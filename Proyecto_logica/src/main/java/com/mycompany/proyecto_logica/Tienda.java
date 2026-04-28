@@ -5,29 +5,27 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+import java.awt.*;
+import javax.swing.*;
 
-public class Tienda extends JFrame  {
+public class Tienda extends JFrame {
     public static void main(String[] args) {
-        
+
         Tienda ventana = new Tienda();
     }
 
-    //Estructuras de datos
-    HashMap<String, Cliente> clientes = new HashMap<>();
-    ArrayList<Mueble> productos = new ArrayList<>();
+    // Estructuras de datos
+    HashMap<Integer, Cliente> clientes = new HashMap<>();
+    HashMap<String, Mueble> productos = new HashMap<>();
+    ArrayList<Compra> compras = new ArrayList<>();
 
-    //Interfaz
+    // Interfaz
     JMenuBar barra;
     JMenu menu, graficos;
-    JMenuItem opcion, opcion1, opcion2, opcion3, opcion4, opcion5, opcion6, opcion7, opcion8, opcion9
-    , submenu91, submenu92;
+    JMenuItem opcion, opcion1, opcion2, opcion3, opcion4, opcion5, opcion6, opcion7, opcion8, opcion9, submenu91,
+            submenu92;
 
-    public Tienda(){
+    public Tienda() {
 
         setTitle("Sistema de Compra");
 
@@ -40,137 +38,142 @@ public class Tienda extends JFrame  {
         opcion1 = new JMenuItem("Registrar cliente");
         menu.add(opcion1);
 
-        //Acciones de la opcion 1
+        // Acciones de la opcion 1
         opcion1.addActionListener(e -> {
-            try {
-                String documento = JOptionPane.showInputDialog("Ingrese el numero de documento de identidad:");
-                
-                String nombre = JOptionPane.showInputDialog("Ingrese el nombre completo:");            
-
-                String fechaTexto = JOptionPane.showInputDialog("Ingrese la fecha de nacimiento (DD/MM/YYYY):");
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                LocalDate fecha = LocalDate.parse(fechaTexto, formatter);
-
-                //para ver que no se repita el usuario y agregarlo al hashmap
-                if (clientes.containsKey(documento)) {
-                    JOptionPane.showMessageDialog(null, "El cliente" + nombre + " ya existe");
-                    return;
-                }else{ 
-                    clientes.put(documento, new Cliente(documento, nombre, fecha));
-                    JOptionPane.showMessageDialog(null, "Registro exitoso");
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Error en datos");
-            }
+            registrarCliente();
         });
 
-        opcion2 = new JMenuItem("Registrar un producto.");
+        opcion2 = new JMenuItem("Ver clientes registrados");
         menu.add(opcion2);
 
-        //Acciones de la opcion 2
         opcion2.addActionListener(e -> {
-            try {
-                int opcion = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el mueble a registrar:\n1. Mesa\n2. Silla"));
-                
-                String codigo = JOptionPane.showInputDialog("Ingrese el codigo:");            
-                String descripcion_producto = JOptionPane.showInputDialog("Ingrese la descripcion del producto:");
-                String material_producto  = JOptionPane.showInputDialog("Ingrese el material:");
-                double precio_procuto = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio:"));
-                String color_producto  = JOptionPane.showInputDialog("Ingrese el color:");
-                int cantidad_producto  = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad de unidades:"));
-                
-                if (opcion == 1) {
-                    String forma_tapam = JOptionPane.showInputDialog("Ingrese la forma de la tapa:");
-                    double ancho_tapam = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el ancho de la tapa:"));
-                    double largo_tapam = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el largo de la tapa:"));
-                    String material_tapam = JOptionPane.showInputDialog("Ingrese el material de la tapa:");
-
-                    productos.add(new Mesa(codigo, descripcion_producto, material_producto, precio_procuto, color_producto, cantidad_producto, 
-                        forma_tapam, ancho_tapam, largo_tapam, material_tapam));
-
-                }else if(opcion == 2){
-                    String tapizados = JOptionPane.showInputDialog("Ingrese el material de tapizado:");
-                    String colors = JOptionPane.showInputDialog("Ingrese el color del tapizado:");
-                    String densidads = JOptionPane.showInputDialog("Ingrese la densidad de la espuma:");
-
-                    productos.add(new Silla(codigo, descripcion_producto, material_producto, precio_procuto, color_producto, cantidad_producto, 
-                        tapizados, colors, densidads));
-
-                }else{
-                    JOptionPane.showMessageDialog(null, "Opción invalida.");   
-                }
-
-                JOptionPane.showMessageDialog(null, "Producto registrado correctamente.");
-
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Error en los datos.");
-            }
+            verClientes();
         });
 
-        opcion3 = new JMenuItem("Registrar compra.");
-        menu.add(opcion3);
+        // opcion2 = new JMenuItem("Registrar un producto.");
+        // menu.add(opcion2);
 
-        //Acciones de la opcion 3, lo hice con IA porque no sabía como seguir
-        opcion3.addActionListener(e -> {
-            try {
-                String documento = JOptionPane.showInputDialog("Ingrese el numero de documento de identidad:");
+        // //Acciones de la opcion 2
+        // opcion2.addActionListener(e -> {
+        // try {
+        // int opcion = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el mueble
+        // a registrar:\n1. Mesa\n2. Silla"));
 
-                if (!clientes.containsKey(documento)) {
-                    JOptionPane.showMessageDialog(null, "El cliente " + documento + " no existe");
-                    return;
-                }
+        // String codigo = JOptionPane.showInputDialog("Ingrese el codigo:");
+        // String descripcion_producto = JOptionPane.showInputDialog("Ingrese la
+        // descripcion del producto:");
+        // String material_producto = JOptionPane.showInputDialog("Ingrese el
+        // material:");
+        // double precio_procuto =
+        // Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio:"));
+        // String color_producto = JOptionPane.showInputDialog("Ingrese el color:");
+        // int cantidad_producto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese
+        // la cantidad de unidades:"));
 
-                Cliente cliente = clientes.get(documento);
-                LocalDate fechaCompra = LocalDate.now();
+        // if (opcion == 1) {
+        // String forma_tapam = JOptionPane.showInputDialog("Ingrese la forma de la
+        // tapa:");
+        // double ancho_tapam = Double.parseDouble(JOptionPane.showInputDialog("Ingrese
+        // el ancho de la tapa:"));
+        // double largo_tapam = Double.parseDouble(JOptionPane.showInputDialog("Ingrese
+        // el largo de la tapa:"));
+        // String material_tapam = JOptionPane.showInputDialog("Ingrese el material de
+        // la tapa:");
 
-                int documento_existe = 1;
-                double total = 0;
+        // productos.add(new Mesa(codigo, descripcion_producto, material_producto,
+        // precio_procuto, color_producto, cantidad_producto,
+        // forma_tapam, ancho_tapam, largo_tapam, material_tapam));
 
-                while (documento_existe == 1) {
-                    String codigo = JOptionPane.showInputDialog("Ingrese el código del producto:");
+        // }else if(opcion == 2){
+        // String tapizados = JOptionPane.showInputDialog("Ingrese el material de
+        // tapizado:");
+        // String colors = JOptionPane.showInputDialog("Ingrese el color del
+        // tapizado:");
+        // String densidads = JOptionPane.showInputDialog("Ingrese la densidad de la
+        // espuma:");
 
-                    Mueble prod = null;
-                    for (Mueble m : productos) {
-                        if (m.getCodigo().equals(codigo)) {
-                            prod = m;
-                            break;
-                        }
-                    }
+        // productos.add(new Silla(codigo, descripcion_producto, material_producto,
+        // precio_procuto, color_producto, cantidad_producto,
+        // tapizados, colors, densidads));
 
-                    if (prod == null) {
-                        JOptionPane.showMessageDialog(null, "El producto no fue encontrado");
-                        continue;
-                    }
+        // }else{
+        // JOptionPane.showMessageDialog(null, "Opción invalida.");
+        // }
 
-                    int cant = Integer.parseInt(JOptionPane.showInputDialog("Cantidad:"));
+        // JOptionPane.showMessageDialog(null, "Producto registrado correctamente.");
 
-                    if (prod.getCantidad_unidades() < cant) {
-                        JOptionPane.showMessageDialog(null, "Sin stock");
-                        continue;
-                    }
+        // } catch (Exception ex) {
+        // JOptionPane.showMessageDialog(null, "Error en los datos.");
+        // }
+        // });
 
-                    total += prod.getPrecio() * cant;
+        // opcion3 = new JMenuItem("Registrar compra.");
+        // menu.add(opcion3);
 
-                    prod.setCantidad_unidades(prod.getCantidad_unidades() - cant);
+        // Acciones de la opcion 3, lo hice con IA porque no sabía como seguir
+        // opcion3.addActionListener(e -> {
+        // try {
+        // int documento = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el
+        // numero de documento de identidad:"));
 
-                    documento_existe = JOptionPane.showConfirmDialog(null,"¿Agregar otro producto?", "Compra",
-                            JOptionPane.YES_NO_OPTION);
-                }
+        // if (!clientes.containsKey(documento)) {
+        // JOptionPane.showMessageDialog(null, "El cliente " + documento + " no
+        // existe");
+        // return;
+        // }
 
-                double pagar = total;
+        // Cliente cliente = clientes.get(documento);
+        // LocalDate fechaCompra = LocalDate.now();
 
-                if (cliente.getFecha_cumpleaños().getMonth() == fechaCompra.getMonth()) {
-                    pagar = total * 0.90;
-                }
+        // int documento_existe = 1;
+        // double total = 0;
 
-                JOptionPane.showMessageDialog(null,
-                        "Total: " + total + "\nA pagar: " + pagar);
+        // while (documento_existe == 1) {
+        // String codigo = JOptionPane.showInputDialog("Ingrese el código del
+        // producto:");
 
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Error en compra");
-            }
-        });
+        // Mueble prod = null;
+        // for (Mueble m : productos) {
+        // if (m.getCodigo().equals(codigo)) {
+        // prod = m;
+        // break;
+        // }
+        // }
+
+        // if (prod == null) {
+        // JOptionPane.showMessageDialog(null, "El producto no fue encontrado");
+        // continue;
+        // }
+
+        // int cant = Integer.parseInt(JOptionPane.showInputDialog("Cantidad:"));
+
+        // if (prod.getCantidad_unidades() < cant) {
+        // JOptionPane.showMessageDialog(null, "Sin stock");
+        // continue;
+        // }
+
+        // total += prod.getPrecio() * cant;
+
+        // prod.setCantidad_unidades(prod.getCantidad_unidades() - cant);
+
+        // documento_existe = JOptionPane.showConfirmDialog(null,"¿Agregar otro
+        // producto?", "Compra",
+        // JOptionPane.YES_NO_OPTION);
+        // }
+
+        // double pagar = total;
+
+        // if (cliente.getFecha_cumpleaños().getMonth() == fechaCompra.getMonth()) {
+        // pagar = total * 0.90;
+        // }
+
+        // JOptionPane.showMessageDialog(null,
+        // "Total: " + total + "\nA pagar: " + pagar);
+
+        // } catch (Exception ex) {
+        // JOptionPane.showMessageDialog(null, "Error en compra");
+        // }
+        // });
 
         // opcion4 = new JMenuItem("Mostrar los productos de la tienda.");
         // menu.add(opcion4);
@@ -184,11 +187,12 @@ public class Tienda extends JFrame  {
         // opcion7 = new JMenuItem("Cantidades unitarias de los productos.");
         // menu.add(opcion7);
 
-        // opcion8 = new JMenuItem("Fecha y valor pagado para las compras de un cliente.");
+        // opcion8 = new JMenuItem("Fecha y valor pagado para las compras de un
+        // cliente.");
         // menu.add(opcion8);
 
         // opcion9 = new JMenuItem("Gráficos.");
-        // menu.add(opcion9); 
+        // menu.add(opcion9);
         // //Submenu de la opcion 9
         // submenu91 = new JMenuItem("Cantidad de prouctos por material.");
         // opcion9.add(submenu91);
@@ -196,7 +200,98 @@ public class Tienda extends JFrame  {
         // opcion9.add(submenu92);
 
         setVisible(true);
-        setSize(400, 300);
+        setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
+    // Funcion para registrar un cliente
+    private void registrarCliente() {
+        //creacion del dialogo para registrar un cliente (ventana emergente - modal)
+        JDialog dialog = new JDialog(this, "Registrar Cliente", true); 
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        //creacion de los campos para registrar un cliente
+        JTextField fieldDocumento = new JTextField();
+        JTextField fieldNombre = new JTextField();
+        JTextField fieldFechaNacimiento = new JTextField();
+
+        //creacion del formulario para registrar un cliente
+        JPanel form = new JPanel(new GridLayout(3, 2, 5, 4)); //(filas - columnas - gap horizontal - gap vertical)
+        // labels y campos para el formulario
+        form.add(new JLabel("Documento de identidad:"));
+        form.add(fieldDocumento);
+        form.add(new JLabel("Nombre:"));
+        form.add(fieldNombre);
+        form.add(new JLabel("Fecha de nacimiento (DD/MM/YYYY):"));
+        form.add(fieldFechaNacimiento);
+
+        //botones para guardar o cancelar el registro del cliente
+        JButton btnGuardar = new JButton("Guardar");
+        JButton btnCancelar = new JButton("Cancelar");
+
+        //Acciones del boton guardar, con validaciones para los campos y el formato de la fecha
+        btnGuardar.addActionListener(evento -> {
+            try {  
+                //validacion de campos vacios
+                if (fieldDocumento.getText().trim().isEmpty()
+                        || fieldNombre.getText().trim().isEmpty()
+                        || fieldFechaNacimiento.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(dialog, "Complete todos los campos");
+                    return;
+                }
+
+                // captura de los datos ingresados por el usuario
+                int documento = Integer.parseInt(fieldDocumento.getText().trim());
+                String nombre = fieldNombre.getText().trim();
+
+                // validacion de cliente existente
+                if (clientes.containsKey(documento)) {
+                    JOptionPane.showMessageDialog(dialog, "El cliente con documento " + documento + " ya existe");
+                    return;
+                }
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate fecha = LocalDate.parse(fieldFechaNacimiento.getText().trim(), formatter);
+
+                // creacion del cliente y guardado en la estructura de datos
+                clientes.put(documento, new Cliente(documento, nombre, fecha));
+                JOptionPane.showMessageDialog(dialog, "Cliente registrado correctamente");
+                dialog.dispose(); // cerrar el dialogo despues de guardar el cliente
+            } catch (Exception ex) { // captura de errores en el formato de los datos ingresados
+                JOptionPane.showMessageDialog(dialog, "Error en los datos");
+                return;
+            }
+        });
+
+        // Acciones del boton cancelar, que simplemente cierra el dialogo sin guardar nada
+        btnCancelar.addActionListener(ev -> dialog.dispose());
+
+        // panel para los botones
+        JPanel botones = new JPanel();
+        botones.add(btnGuardar);
+        botones.add(btnCancelar);
+        //panel contenedor para el formulario y botonnes, con un borde para hacerlo mas bonito
+        JPanel contenido = new JPanel(new BorderLayout(10, 10));
+        contenido.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12)); // margen alrededor del contenido
+        contenido.add(form, BorderLayout.CENTER); // formulario en el centro
+        contenido.add(botones, BorderLayout.SOUTH); // botones en la parte inferior
+        dialog.setContentPane(contenido); // se establece el contenido del dialogo (modal)
+
+        
+        dialog.pack(); // ajusta el tamaño del dialogo al contenido
+        dialog.setLocationRelativeTo(this); // centra el dialogo respecto a la ventana principal
+        dialog.setVisible(true); // muestra el dialogo para registrar un cliente
+
+    }
+
+    //funcion para ver los clientes registrados
+    private void verClientes(){
+        String cad = "";    
+
+
+            for (Cliente c : clientes.values()) {
+                cad += c.toString() + "\n";
+            }
+            JOptionPane.showMessageDialog(this, cad, "Clientes Registrados", JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -6,7 +6,7 @@ package com.mycompany.proyecto_logica;
 
 /**
  *
- * @author Mariana
+ * @author Mariana & DavidG
  */
 
 import java.time.LocalDate; //Para importar los meses y hacer el if para el descuento del 10%
@@ -37,11 +37,11 @@ public class Cliente {
         this.nombre = nombre;
     }
 
-    public LocalDate getfecha_nacimiento() {
+    public LocalDate getFecha_nacimiento() {
         return fecha_nacimiento;
     }
 
-    public void setfecha_nacimiento(LocalDate fecha_nacimiento) {
+    public void setFecha_nacimiento(LocalDate fecha_nacimiento) {
         this.fecha_nacimiento = fecha_nacimiento;
     }
 

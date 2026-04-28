@@ -8,7 +8,7 @@ package com.mycompany.proyecto_logica;
  *
  * @author Mariana
  */
-public class Mueble {
+public abstract class Mueble {
     protected String codigo;
     protected String descripcion;
     protected String material;
