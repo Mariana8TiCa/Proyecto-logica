@@ -1,9 +1,7 @@
 package com.mycompany.proyecto_logica;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -17,11 +15,11 @@ public class Tienda extends JFrame  {
         Tienda ventana = new Tienda();
     }
 
-    //Estructuras de datos
-    HashMap<String, Cliente> clientes = new HashMap<>();
+    // Estructuras de datos
+    ClienteService clienteService = new ClienteService();
     ArrayList<Mueble> productos = new ArrayList<>();
 
-    //Interfaz
+    // Interfaz
     JMenuBar barra;
     JMenu menu, graficos;
     JMenuItem opcion, opcion1, opcion2, opcion3, opcion4, opcion5, opcion6, opcion7, opcion8, opcion9
@@ -40,29 +38,11 @@ public class Tienda extends JFrame  {
         opcion1 = new JMenuItem("Registrar cliente");
         menu.add(opcion1);
 
-        //Acciones de la opcion 1
+        // Acciones de la opcion 1: abre el formulario de registro
         opcion1.addActionListener(e -> {
-            try {
-                String documento = JOptionPane.showInputDialog("Ingrese el numero de documento de identidad:");
-                
-                String nombre = JOptionPane.showInputDialog("Ingrese el nombre completo:");            
-
-                String fechaTexto = JOptionPane.showInputDialog("Ingrese la fecha de nacimiento (DD/MM/YYYY):");
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                LocalDate fecha = LocalDate.parse(fechaTexto, formatter);
-
-                //para ver que no se repita el usuario y agregarlo al hashmap
-                if (clientes.containsKey(documento)) {
-                    JOptionPane.showMessageDialog(null, "El cliente" + nombre + " ya existe");
-                    return;
-                }else{ 
-                    clientes.put(documento, new Cliente(documento, nombre, fecha));
-                    JOptionPane.showMessageDialog(null, "Registro exitoso");
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Error en datos");
-            }
+            ClienteRegistroDialog dlg = new ClienteRegistroDialog(this, clienteService);
+            dlg.setVisible(true);
+            // El diálogo maneja el registro y los mensajes de éxito/error internamente.
         });
 
         opcion2 = new JMenuItem("Registrar un producto.");
@@ -116,12 +96,12 @@ public class Tienda extends JFrame  {
             try {
                 String documento = JOptionPane.showInputDialog("Ingrese el numero de documento de identidad:");
 
-                if (!clientes.containsKey(documento)) {
+                if (!clienteService.existe(documento)) {
                     JOptionPane.showMessageDialog(null, "El cliente " + documento + " no existe");
                     return;
                 }
 
-                Cliente cliente = clientes.get(documento);
+                Cliente cliente = clienteService.buscar(documento);
                 LocalDate fechaCompra = LocalDate.now();
 
                 int documento_existe = 1;

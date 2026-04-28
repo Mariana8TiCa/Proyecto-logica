@@ -11,21 +11,21 @@ package com.mycompany.proyecto_logica;
 
 import java.time.LocalDate; //Para importar los meses y hacer el if para el descuento del 10%
 public class Cliente {
-    private int documento_identidad;
+    private String documento_identidad;
     private String nombre;
     private LocalDate fecha_nacimiento;
 
-    public Cliente(int documento_identidad, String nombre, LocalDate fecha_nacimiento) {
+    public Cliente(String documento_identidad, String nombre, LocalDate fecha_nacimiento) {
         this.documento_identidad = documento_identidad;
         this.nombre = nombre;
         this.fecha_nacimiento = fecha_nacimiento;
     }
 
-    public int getDocumento_identidad() {
+    public String getDocumento_identidad() {
         return documento_identidad;
     }
 
-    public void setDocumento_identidad(int documento_identidad) {
+    public void setDocumento_identidad(String documento_identidad) {
         this.documento_identidad = documento_identidad;
     }
 
@@ -38,6 +38,15 @@ public class Cliente {
     }
 
     public LocalDate getfecha_nacimiento() {
+        return fecha_nacimiento;
+    }
+
+    /**
+     * Alias para el flujo de compra: devuelve la fecha de nacimiento del cliente,
+     * que se utiliza para verificar si el mes de la compra coincide con el mes
+     * de cumpleaños y aplicar el descuento del 10 %.
+     */
+    public LocalDate getFecha_cumpleaños() {
         return fecha_nacimiento;
     }
 
