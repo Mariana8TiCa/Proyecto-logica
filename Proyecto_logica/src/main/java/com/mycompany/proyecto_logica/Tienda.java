@@ -22,7 +22,8 @@ public class Tienda extends JFrame {
     // Interfaz
     JMenuBar barra;
     JMenu menu, registrarProducto, graficos;
-    JMenuItem registrarCliente, clientesRegistrados, opcionSilla, opcioneMesa, opcion5, opcion6, opcion7, opcion8,
+    JMenuItem registrarCliente, clientesRegistrados, productosRegistrados, opcionSilla, opcioneMesa, opcion5, opcion6,
+            opcion7, opcion8,
             opcion9, submenu91,
             submenu92;
 
@@ -49,6 +50,13 @@ public class Tienda extends JFrame {
 
         clientesRegistrados.addActionListener(e -> {
             verClientes();
+        });
+
+        productosRegistrados = new JMenuItem("Ver productos registrados");
+        menu.add(productosRegistrados);
+
+        productosRegistrados.addActionListener(e -> {
+            verProductos();
         });
 
         menu.addSeparator();
@@ -248,6 +256,7 @@ public class Tienda extends JFrame {
         // la fecha
         btnGuardar.addActionListener(evento -> {
             try {
+
                 // validacion de campos vacios
                 if (fieldDocumento.getText().trim().isEmpty()
                         || fieldNombre.getText().trim().isEmpty()
@@ -256,23 +265,30 @@ public class Tienda extends JFrame {
                     return;
                 }
 
-                // captura de los datos ingresados por el usuario
-                int documento = Integer.parseInt(fieldDocumento.getText().trim());
-                String nombre = fieldNombre.getText().trim();
-
-                // validacion de cliente existente
-                if (clientes.containsKey(documento)) {
-                    JOptionPane.showMessageDialog(dialog, "El cliente con documento " + documento + " ya existe");
+                // validacion de datos ingresados, el documento solo debe ser numeros
+                if (!fieldDocumento.getText().trim().matches("\\d+")) {
+                    JOptionPane.showMessageDialog(dialog, "El documento de identidad solo debe contener números");
                     return;
+                } else {
+                    // captura de los datos ingresados por el usuario
+                    int documento = Integer.parseInt(fieldDocumento.getText().trim());
+                    String nombre = fieldNombre.getText().trim();
+
+                    // validacion de cliente existente
+                    if (clientes.containsKey(documento)) {
+                        JOptionPane.showMessageDialog(dialog, "El cliente con documento " + documento + " ya existe");
+                        return;
+                    }
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    LocalDate fecha = LocalDate.parse(fieldFechaNacimiento.getText().trim(), formatter);
+
+                    // creacion del cliente y guardado en la estructura de datos
+                    clientes.put(documento, new Cliente(documento, nombre, fecha));
+                    JOptionPane.showMessageDialog(dialog, "Cliente registrado correctamente");
+                    dialog.dispose(); // cerrar el dialogo despues de guardar el cliente
                 }
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                LocalDate fecha = LocalDate.parse(fieldFechaNacimiento.getText().trim(), formatter);
-
-                // creacion del cliente y guardado en la estructura de datos
-                clientes.put(documento, new Cliente(documento, nombre, fecha));
-                JOptionPane.showMessageDialog(dialog, "Cliente registrado correctamente");
-                dialog.dispose(); // cerrar el dialogo despues de guardar el cliente
             } catch (Exception ex) { // captura de errores en el formato de los datos ingresados
                 JOptionPane.showMessageDialog(dialog, "Error en los datos");
                 return;
@@ -280,7 +296,6 @@ public class Tienda extends JFrame {
         });
 
         // Acciones del boton cancelar, que simplemente cierra el dialogo sin guardar
-        // nada
         btnCancelar.addActionListener(ev -> dialog.dispose());
 
         // panel para los botones
@@ -311,46 +326,68 @@ public class Tienda extends JFrame {
         JOptionPane.showMessageDialog(this, cad, "Clientes Registrados", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    // funcion para registrar un producto (mueble)
+    // dependiendo del tipo de objeto mueble que se le pase por parametro, mostrara
+    // un formulario diferente
     private void registrarProducto(Mueble mueble) {
 
-        if (mueble instanceof Mesa) {
+        if (mueble instanceof Mesa) { // modal para registrar una mesa
             JDialog dialog = new JDialog(this, "Registrar Mesa", true);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); // para que al cerrar el dialogo no se cierre la ventana principal
 
             // campos
-            JTextField fielCodigo = new JTextField();
+            JTextField fieldCodigo = new JTextField();
             JTextField fieldDescripcion = new JTextField();
-            JTextField fieldMaterial = new JTextField();
+            // JTextField fieldMaterial = new JTextField();
             JTextField fieldPrecio = new JTextField();
-            JTextField fieldColor = new JTextField();
+            // JTextField fieldColor = new JTextField();
             JTextField fieldCantidad = new JTextField();
-            JTextField fieldFormaTapa = new JTextField();
+            // JTextField fieldFormaTapa = new JTextField();
             JTextField fieldAnchoTapa = new JTextField();
             JTextField fieldLargoTapa = new JTextField();
-            JTextField fieldMaterialTapa = new JTextField();
+            // JTextField fieldMaterialTapa = new JTextField();
 
             // añadimos los campos
             JPanel form = new JPanel(new GridLayout(10, 2, 5, 4));
             form.add(new JLabel("Codigo:"));
-            form.add(fielCodigo);
+            form.add(fieldCodigo);
             form.add(new JLabel("Descripcion:"));
             form.add(fieldDescripcion);
+
+            // materiales es un combo box
+            String[] materiales = { "Madera", "Aglomerado", "Metal", "Otro" }; // opciones de materiales
+            JComboBox<String> comboMaterial = new JComboBox<>(materiales);
             form.add(new JLabel("Material:"));
-            form.add(fieldMaterial);
+            form.add(comboMaterial);
+
             form.add(new JLabel("Precio:"));
             form.add(fieldPrecio);
+
+            // color es un combo box
+            String[] colores = { "Blanco", "Gris", "Beidge", "Negro", "Cedro", "Roble", "Otro" };
+            JComboBox<String> comboColor = new JComboBox<>(colores);
             form.add(new JLabel("Color:"));
-            form.add(fieldColor);
+            form.add(comboColor);
+
             form.add(new JLabel("Cantidad de unidades:"));
             form.add(fieldCantidad);
+
+            // forma de la tapa es un combo box
+            String[] formasTapa = { "Rectangular", "Cuadrada", "Ovalada", "Redonda", "Otro" };
+            JComboBox<String> comboFormaTapa = new JComboBox<>(formasTapa);
             form.add(new JLabel("Forma de la tapa:"));
-            form.add(fieldFormaTapa);
+            form.add(comboFormaTapa);
+
             form.add(new JLabel("Ancho de la tapa:"));
             form.add(fieldAnchoTapa);
             form.add(new JLabel("Largo de la tapa:"));
             form.add(fieldLargoTapa);
+
+            // material de la tapa es un combo box
+            String[] materialesTapa = { "Madera", "Aglomerado", "Metal", "Vidrio", "Otro" };
+            JComboBox<String> comboMaterialTapa = new JComboBox<>(materialesTapa);
             form.add(new JLabel("Material de la tapa:"));
-            form.add(fieldMaterialTapa);
+            form.add(comboMaterialTapa);
 
             // botones para guardar o cancelar el registro del producto
             JButton btnGuardar = new JButton("Guardar");
@@ -358,28 +395,71 @@ public class Tienda extends JFrame {
 
             btnGuardar.addActionListener(evento -> {
                 try {
-                    int codigo = Integer.parseInt(fielCodigo.getText().trim());
-                    String descripcion = fieldDescripcion.getText().trim();
-                    String material = fieldMaterial.getText().trim();
-                    double precio = Double.parseDouble(fieldPrecio.getText().trim());
-                    String color = fieldColor.getText().trim();
-                    int cantidad = Integer.parseInt(fieldCantidad.getText().trim());
-                    String formaTapa = fieldFormaTapa.getText().trim();
-                    double anchoTapa = Double.parseDouble(fieldAnchoTapa.getText().trim());
-                    double largoTapa = Double.parseDouble(fieldLargoTapa.getText().trim());
-                    String materialTapa = fieldMaterialTapa.getText().trim();
 
-                    productos.put(codigo, new Mesa(codigo, descripcion, material, precio, color, cantidad,
-                            formaTapa, anchoTapa, largoTapa, materialTapa));
-                    JOptionPane.showMessageDialog(dialog, "Mesa registrada correctamente");
-                    dialog.dispose();
+                    // validacion para campos vacios
+                    if (fieldCodigo.getText().trim().isEmpty() ||
+                            fieldDescripcion.getText().trim().isEmpty() ||
+                            fieldPrecio.getText().trim().isEmpty() ||
+                            fieldCantidad.getText().trim().isEmpty() ||
+                            fieldAnchoTapa.getText().trim().isEmpty() ||
+                            fieldLargoTapa.getText().trim().isEmpty() ||
+                            comboMaterial.getSelectedItem() == null ||
+                            comboColor.getSelectedItem() == null ||
+                            comboFormaTapa.getSelectedItem() == null ||
+                            comboMaterialTapa.getSelectedItem() == null) {
+
+                        JOptionPane.showMessageDialog(dialog, "Complete todos los campos");
+                        return;
+                    }
+
+                    // validaciones para tipos de datos datos ingresados en los campos
+                    if (!fieldCodigo.getText().trim().matches("\\d+")) {
+                        JOptionPane.showMessageDialog(dialog, "El codigo solo debe contener números");
+                        return;
+                    } else if (!fieldPrecio.getText().trim().matches("\\d+(\\.\\d+)?")) {
+                        JOptionPane.showMessageDialog(dialog, "El precio debe ser un número válido");
+                        return;
+                    } else if (!fieldCantidad.getText().trim().matches("\\d+")) {
+                        JOptionPane.showMessageDialog(dialog, "La cantidad de unidades solo debe contener números");
+                        return;
+                    } else if (!fieldAnchoTapa.getText().trim().matches("\\d+(\\.\\d+)?")) {
+                        JOptionPane.showMessageDialog(dialog, "El ancho de la tapa debe ser un número válido");
+                        return;
+                    } else if (!fieldLargoTapa.getText().trim().matches("\\d+(\\.\\d+)?")) {
+                        JOptionPane.showMessageDialog(dialog, "El largo de la tapa debe ser un número válido");
+                        return;
+                    } else {
+                        int codigo = Integer.parseInt(fieldCodigo.getText().trim());
+                        String descripcion = fieldDescripcion.getText().trim();
+                        String material = (String) comboMaterial.getSelectedItem();
+                        double precio = Double.parseDouble(fieldPrecio.getText().trim());
+                        String color = (String) comboColor.getSelectedItem();
+                        int cantidad = Integer.parseInt(fieldCantidad.getText().trim());
+                        String formaTapa = (String) comboFormaTapa.getSelectedItem();
+                        double anchoTapa = Double.parseDouble(fieldAnchoTapa.getText().trim());
+                        double largoTapa = Double.parseDouble(fieldLargoTapa.getText().trim());
+                        String materialTapa = (String) comboMaterialTapa.getSelectedItem();
+
+                        // validamos que la mesa ya exista
+                        if (productos.containsKey(codigo)) {
+                            JOptionPane.showMessageDialog(dialog, "El producto con codigo: " + codigo + " ya existe");
+                            return;
+                        }
+
+                        productos.put(codigo, new Mesa(codigo, descripcion, material, precio, color, cantidad,
+                                formaTapa, anchoTapa, largoTapa, materialTapa));
+                        JOptionPane.showMessageDialog(dialog, "Mesa registrada correctamente");
+                        dialog.dispose(); // cerrar el dialogo despues de guardar la mesa
+                    }
+
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(dialog, "Error en los datos");
+                    JOptionPane.showMessageDialog(dialog, "Error al registrar los datos");
                 }
             });
 
             btnCancelar.addActionListener(ev -> dialog.dispose());
 
+            // panel para los botones
             JPanel botones = new JPanel();
             botones.add(btnGuardar);
             botones.add(btnCancelar);
@@ -393,63 +473,127 @@ public class Tienda extends JFrame {
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
 
-        } else if (mueble instanceof Silla) {
+        } else if (mueble instanceof Silla) { // modal para registrar una silla
 
             JDialog dialog = new JDialog(this, "Registrar Silla", true);
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
             // campos
-            JTextField fielCodigo = new JTextField();
+            JTextField fieldCodigo = new JTextField();
             JTextField fieldDescripcion = new JTextField();
-            JTextField fieldMaterial = new JTextField();
             JTextField fieldPrecio = new JTextField();
-            JTextField fieldColor = new JTextField();
             JTextField fieldCantidad = new JTextField();
-            JTextField fieldMaterialTapizado = new JTextField();
-            JTextField fieldColorTapizado = new JTextField();
-            JTextField fieldDensidadEspuma = new JTextField();
 
             // añadimos los campos
             JPanel form = new JPanel(new GridLayout(9, 2, 5, 4));
             form.add(new JLabel("Codigo:"));
-            form.add(fielCodigo);
+            form.add(fieldCodigo);
 
             form.add(new JLabel("Descripcion:"));
             form.add(fieldDescripcion);
+
+            String[] materiales = { "Madera", "Aglomerado", "Metal", "Otro" }; // opciones de materiales
+            JComboBox<String> comboMaterial = new JComboBox<>(materiales);
             form.add(new JLabel("Material:"));
-            form.add(fieldMaterial);
+            form.add(comboMaterial);
+
             form.add(new JLabel("Precio:"));
             form.add(fieldPrecio);
+
+            // color es un combo box
+            String[] colores = { "Blanco", "Gris", "Beidge", "Negro", "Cedro", "Roble", "Otro" };
+            JComboBox<String> comboColor = new JComboBox<>(colores);
             form.add(new JLabel("Color:"));
-            form.add(fieldColor);
+            form.add(comboColor);
+
             form.add(new JLabel("Cantidad de unidades:"));
             form.add(fieldCantidad);
+
+            String[] materialesTapizado = { "Cuero", "Cuero sintético", "Tela", "Otro" };
+            JComboBox<String> comboMaterialTapizado = new JComboBox<>(materialesTapizado);
             form.add(new JLabel("Material del tapizado:"));
-            form.add(fieldMaterialTapizado);
+            form.add(comboMaterialTapizado);
+
+            String[] coloresTapizado = { "Beige", "Gris claro", "Gris oscuro", "Crema", "Blanco roto", "Marrón",
+                    "Azul petróleo", "Verde esmeralda", "Amarillo mostaza", "Otro" };
+            JComboBox<String> comboColorTapizado = new JComboBox<>(coloresTapizado);
             form.add(new JLabel("Color del tapizado:"));
-            form.add(fieldColorTapizado);
+            form.add(comboColorTapizado);
+
+            // para la densidad de la espuma, se usan radioButtons para dar solo 2 opciones
+            // a elegir
+            JRadioButton densidadAlta = new JRadioButton("Alta");
+            JRadioButton densidadMedia = new JRadioButton("Media");
+            ButtonGroup grupoDensidad = new ButtonGroup();
+            // añadimos los radio buttons al grupo para que solo se pueda seleccionar uno
+            grupoDensidad.add(densidadAlta);
+            grupoDensidad.add(densidadMedia);
+            // creamos un panel para los radio buttons y los añadimos al formulario
+            JPanel panelDensidad = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            panelDensidad.add(densidadAlta);
+            panelDensidad.add(densidadMedia);
             form.add(new JLabel("Densidad de la espuma:"));
-            form.add(fieldDensidadEspuma);
+            form.add(panelDensidad);
 
             JButton btnGuardar = new JButton("Guardar");
             JButton btnCancelar = new JButton("Cancelar");
 
             btnGuardar.addActionListener(evento -> {
                 try {
-                    int codigo = Integer.parseInt(fielCodigo.getText().trim());
-                    String descripcion = fieldDescripcion.getText().trim();
-                    String material = fieldMaterial.getText().trim();
-                    double precio = Double.parseDouble(fieldPrecio.getText().trim());
-                    String color = fieldColor.getText().trim();
-                    int cantidad = Integer.parseInt(fieldCantidad.getText().trim());
-                    String materialTapizado = fieldMaterialTapizado.getText().trim();
-                    String colorTapizado = fieldColorTapizado.getText().trim();
-                    String densidadEspuma = fieldDensidadEspuma.getText().trim();
 
-                    productos.put(codigo, new Silla(codigo, descripcion, material, precio, color, cantidad,
-                            materialTapizado, colorTapizado, densidadEspuma));
-                    JOptionPane.showMessageDialog(dialog, "Silla registrada correctamente");
-                    dialog.dispose();
+                    // validacion de campos vacios
+                    if (fieldCodigo.getText().trim().isEmpty() ||
+                            fieldDescripcion.getText().trim().isEmpty() ||
+                            fieldPrecio.getText().trim().isEmpty() ||
+                            fieldCantidad.getText().trim().isEmpty() ||
+                            comboMaterialTapizado.getSelectedItem() == null ||
+                            comboColorTapizado.getSelectedItem() == null ||
+                            comboColor.getSelectedItem() == null ||
+                            comboMaterial.getSelectedItem() == null ||
+                            grupoDensidad.getSelection() == null) {
+                        JOptionPane.showMessageDialog(dialog, "Complete todos los campos");
+                        return;
+                    }
+
+                    // validacion de tipos de datos
+                    if (!fieldCodigo.getText().trim().matches("\\d+")) {
+                        JOptionPane.showMessageDialog(dialog, "El codigo solo debe contener números");
+                        return;
+                    } else if (!fieldPrecio.getText().trim().matches("\\d+(\\.\\d+)?")) {
+                        JOptionPane.showMessageDialog(dialog, "El precio debe ser un número válido");
+                        return;
+                    } else if (!fieldCantidad.getText().trim().matches("\\d+")) {
+                        JOptionPane.showMessageDialog(dialog, "La cantidad de unidades solo debe contener números");
+                        return;
+                    } else {
+
+                        int codigo = Integer.parseInt(fieldCodigo.getText().trim());
+                        String descripcion = fieldDescripcion.getText().trim();
+                        String material = (String) comboMaterial.getSelectedItem();
+                        double precio = Double.parseDouble(fieldPrecio.getText().trim());
+                        String color = (String) comboColor.getSelectedItem();
+                        int cantidad = Integer.parseInt(fieldCantidad.getText().trim());
+                        String materialTapizado = (String) comboMaterialTapizado.getSelectedItem();
+                        String colorTapizado = (String) comboColorTapizado.getSelectedItem();
+
+                        String densidadEspuma = "";
+                        if (densidadAlta.isSelected()) {
+                            densidadEspuma = "Alta";
+                        } else if (densidadMedia.isSelected()) {
+                            densidadEspuma = "Media";
+                        }
+
+                        // validamos que la silla ya exista
+                        if (productos.containsKey(codigo)) {
+                            JOptionPane.showMessageDialog(dialog, "El producto con codigo: " + codigo + " ya existe");
+                            return;
+                        }
+
+                        productos.put(codigo, new Silla(codigo, descripcion, material, precio, color, cantidad,
+                                materialTapizado, colorTapizado, densidadEspuma));
+                        JOptionPane.showMessageDialog(dialog, "Silla registrada correctamente");
+                        dialog.dispose();
+                    }
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(dialog, "Error en los datos");
                 }
@@ -473,4 +617,14 @@ public class Tienda extends JFrame {
         }
 
     }
+
+    private void verProductos() {
+        String cad = "";
+
+        for (Mueble m : productos.values()) {
+            cad += m.toString() + "\n";
+        }
+        JOptionPane.showMessageDialog(this, cad, "Productos Registrados", JOptionPane.INFORMATION_MESSAGE);
+    }
+
 }
