@@ -9,14 +9,14 @@ package com.mycompany.proyecto_logica;
  * @author Mariana
  */
 public abstract class Mueble {
-    protected String codigo;
+    protected int codigo;
     protected String descripcion;
     protected String material;
     protected double precio;
     protected String color;
     protected int cantidad_unidades;
 
-    public Mueble(String codigo, String descripcion, String material, double precio, String color, int cantidad_unidades) {
+    public Mueble(int codigo, String descripcion, String material, double precio, String color, int cantidad_unidades) {
         this.codigo = codigo;
         this.descripcion = descripcion;
         this.material = material;
@@ -25,11 +25,14 @@ public abstract class Mueble {
         this.cantidad_unidades = cantidad_unidades;
     }
 
-    public String getCodigo() {
+    public Mueble() {
+    }
+
+    public int getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
+    public void setCodigo(int codigo) {
         this.codigo = codigo;
     }
 
@@ -69,7 +72,7 @@ public abstract class Mueble {
         return cantidad_unidades;
     }
 
-    public void setCantidad_unidades(int cantidad_unidades) {
+    public void actualizarUnidades(int cantidad_unidades) {
         this.cantidad_unidades = cantidad_unidades;
     }
 

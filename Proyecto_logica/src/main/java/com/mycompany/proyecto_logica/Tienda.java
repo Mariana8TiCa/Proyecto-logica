@@ -16,13 +16,14 @@ public class Tienda extends JFrame {
 
     // Estructuras de datos
     HashMap<Integer, Cliente> clientes = new HashMap<>();
-    HashMap<String, Mueble> productos = new HashMap<>();
+    HashMap<Integer, Mueble> productos = new HashMap<>();
     ArrayList<Compra> compras = new ArrayList<>();
 
     // Interfaz
     JMenuBar barra;
-    JMenu menu, graficos;
-    JMenuItem opcion, opcion1, opcion2, opcion3, opcion4, opcion5, opcion6, opcion7, opcion8, opcion9, submenu91,
+    JMenu menu, registrarProducto, graficos;
+    JMenuItem registrarCliente, clientesRegistrados, opcionSilla, opcioneMesa, opcion5, opcion6, opcion7, opcion8,
+            opcion9, submenu91,
             submenu92;
 
     public Tienda() {
@@ -35,25 +36,39 @@ public class Tienda extends JFrame {
         menu = new JMenu("Menú");
         barra.add(menu);
 
-        opcion1 = new JMenuItem("Registrar cliente");
-        menu.add(opcion1);
+        registrarCliente = new JMenuItem("Registrar cliente");
+        menu.add(registrarCliente);
 
-        // Acciones de la opcion 1
-        opcion1.addActionListener(e -> {
+        // Acciones para registrar Cliente
+        registrarCliente.addActionListener(e -> {
             registrarCliente();
         });
 
-        opcion2 = new JMenuItem("Ver clientes registrados");
-        menu.add(opcion2);
+        clientesRegistrados = new JMenuItem("Ver clientes registrados");
+        menu.add(clientesRegistrados);
 
-        opcion2.addActionListener(e -> {
+        clientesRegistrados.addActionListener(e -> {
             verClientes();
         });
 
-        // opcion2 = new JMenuItem("Registrar un producto.");
-        // menu.add(opcion2);
+        menu.addSeparator();
+        registrarProducto = new JMenu("Registrar un producto.");
+        menu.add(registrarProducto);
 
-        // //Acciones de la opcion 2
+        opcioneMesa = new JMenuItem("Registrar una mesa.");
+        opcionSilla = new JMenuItem("Registrar una silla.");
+
+        registrarProducto.add(opcioneMesa);
+        registrarProducto.add(opcionSilla);
+
+        opcioneMesa.addActionListener(e -> {
+            registrarProducto(new Mesa());
+        });
+
+        opcionSilla.addActionListener(e -> {
+            registrarProducto(new Silla());
+        });
+
         // opcion2.addActionListener(e -> {
         // try {
         // int opcion = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el mueble
@@ -206,17 +221,17 @@ public class Tienda extends JFrame {
 
     // Funcion para registrar un cliente
     private void registrarCliente() {
-        //creacion del dialogo para registrar un cliente (ventana emergente - modal)
-        JDialog dialog = new JDialog(this, "Registrar Cliente", true); 
+        // creacion del dialogo para registrar un cliente (ventana emergente - modal)
+        JDialog dialog = new JDialog(this, "Registrar Cliente", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        //creacion de los campos para registrar un cliente
+        // creacion de los campos para registrar un cliente
         JTextField fieldDocumento = new JTextField();
         JTextField fieldNombre = new JTextField();
         JTextField fieldFechaNacimiento = new JTextField();
 
-        //creacion del formulario para registrar un cliente
-        JPanel form = new JPanel(new GridLayout(3, 2, 5, 4)); //(filas - columnas - gap horizontal - gap vertical)
+        // creacion del formulario para registrar un cliente
+        JPanel form = new JPanel(new GridLayout(3, 2, 5, 4)); // (filas - columnas - gap horizontal - gap vertical)
         // labels y campos para el formulario
         form.add(new JLabel("Documento de identidad:"));
         form.add(fieldDocumento);
@@ -225,14 +240,15 @@ public class Tienda extends JFrame {
         form.add(new JLabel("Fecha de nacimiento (DD/MM/YYYY):"));
         form.add(fieldFechaNacimiento);
 
-        //botones para guardar o cancelar el registro del cliente
+        // botones para guardar o cancelar el registro del cliente
         JButton btnGuardar = new JButton("Guardar");
         JButton btnCancelar = new JButton("Cancelar");
 
-        //Acciones del boton guardar, con validaciones para los campos y el formato de la fecha
+        // Acciones del boton guardar, con validaciones para los campos y el formato de
+        // la fecha
         btnGuardar.addActionListener(evento -> {
-            try {  
-                //validacion de campos vacios
+            try {
+                // validacion de campos vacios
                 if (fieldDocumento.getText().trim().isEmpty()
                         || fieldNombre.getText().trim().isEmpty()
                         || fieldFechaNacimiento.getText().trim().isEmpty()) {
@@ -263,35 +279,198 @@ public class Tienda extends JFrame {
             }
         });
 
-        // Acciones del boton cancelar, que simplemente cierra el dialogo sin guardar nada
+        // Acciones del boton cancelar, que simplemente cierra el dialogo sin guardar
+        // nada
         btnCancelar.addActionListener(ev -> dialog.dispose());
 
         // panel para los botones
         JPanel botones = new JPanel();
         botones.add(btnGuardar);
         botones.add(btnCancelar);
-        //panel contenedor para el formulario y botonnes, con un borde para hacerlo mas bonito
+        // panel contenedor para el formulario y botonnes, con un borde para hacerlo mas
+        // bonito
         JPanel contenido = new JPanel(new BorderLayout(10, 10));
         contenido.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12)); // margen alrededor del contenido
         contenido.add(form, BorderLayout.CENTER); // formulario en el centro
         contenido.add(botones, BorderLayout.SOUTH); // botones en la parte inferior
         dialog.setContentPane(contenido); // se establece el contenido del dialogo (modal)
 
-        
         dialog.pack(); // ajusta el tamaño del dialogo al contenido
         dialog.setLocationRelativeTo(this); // centra el dialogo respecto a la ventana principal
         dialog.setVisible(true); // muestra el dialogo para registrar un cliente
 
     }
 
-    //funcion para ver los clientes registrados
-    private void verClientes(){
-        String cad = "";    
+    // funcion para ver los clientes registrados
+    private void verClientes() {
+        String cad = "";
 
+        for (Cliente c : clientes.values()) {
+            cad += c.toString() + "\n";
+        }
+        JOptionPane.showMessageDialog(this, cad, "Clientes Registrados", JOptionPane.INFORMATION_MESSAGE);
+    }
 
-            for (Cliente c : clientes.values()) {
-                cad += c.toString() + "\n";
-            }
-            JOptionPane.showMessageDialog(this, cad, "Clientes Registrados", JOptionPane.INFORMATION_MESSAGE);
+    private void registrarProducto(Mueble mueble) {
+
+        if (mueble instanceof Mesa) {
+            JDialog dialog = new JDialog(this, "Registrar Mesa", true);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+            // campos
+            JTextField fielCodigo = new JTextField();
+            JTextField fieldDescripcion = new JTextField();
+            JTextField fieldMaterial = new JTextField();
+            JTextField fieldPrecio = new JTextField();
+            JTextField fieldColor = new JTextField();
+            JTextField fieldCantidad = new JTextField();
+            JTextField fieldFormaTapa = new JTextField();
+            JTextField fieldAnchoTapa = new JTextField();
+            JTextField fieldLargoTapa = new JTextField();
+            JTextField fieldMaterialTapa = new JTextField();
+
+            // añadimos los campos
+            JPanel form = new JPanel(new GridLayout(10, 2, 5, 4));
+            form.add(new JLabel("Codigo:"));
+            form.add(fielCodigo);
+            form.add(new JLabel("Descripcion:"));
+            form.add(fieldDescripcion);
+            form.add(new JLabel("Material:"));
+            form.add(fieldMaterial);
+            form.add(new JLabel("Precio:"));
+            form.add(fieldPrecio);
+            form.add(new JLabel("Color:"));
+            form.add(fieldColor);
+            form.add(new JLabel("Cantidad de unidades:"));
+            form.add(fieldCantidad);
+            form.add(new JLabel("Forma de la tapa:"));
+            form.add(fieldFormaTapa);
+            form.add(new JLabel("Ancho de la tapa:"));
+            form.add(fieldAnchoTapa);
+            form.add(new JLabel("Largo de la tapa:"));
+            form.add(fieldLargoTapa);
+            form.add(new JLabel("Material de la tapa:"));
+            form.add(fieldMaterialTapa);
+
+            // botones para guardar o cancelar el registro del producto
+            JButton btnGuardar = new JButton("Guardar");
+            JButton btnCancelar = new JButton("Cancelar");
+
+            btnGuardar.addActionListener(evento -> {
+                try {
+                    int codigo = Integer.parseInt(fielCodigo.getText().trim());
+                    String descripcion = fieldDescripcion.getText().trim();
+                    String material = fieldMaterial.getText().trim();
+                    double precio = Double.parseDouble(fieldPrecio.getText().trim());
+                    String color = fieldColor.getText().trim();
+                    int cantidad = Integer.parseInt(fieldCantidad.getText().trim());
+                    String formaTapa = fieldFormaTapa.getText().trim();
+                    double anchoTapa = Double.parseDouble(fieldAnchoTapa.getText().trim());
+                    double largoTapa = Double.parseDouble(fieldLargoTapa.getText().trim());
+                    String materialTapa = fieldMaterialTapa.getText().trim();
+
+                    productos.put(codigo, new Mesa(codigo, descripcion, material, precio, color, cantidad,
+                            formaTapa, anchoTapa, largoTapa, materialTapa));
+                    JOptionPane.showMessageDialog(dialog, "Mesa registrada correctamente");
+                    dialog.dispose();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(dialog, "Error en los datos");
+                }
+            });
+
+            btnCancelar.addActionListener(ev -> dialog.dispose());
+
+            JPanel botones = new JPanel();
+            botones.add(btnGuardar);
+            botones.add(btnCancelar);
+
+            JPanel contenedor = new JPanel(new BorderLayout(10, 10));
+            contenedor.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+            contenedor.add(form, BorderLayout.CENTER);
+            contenedor.add(botones, BorderLayout.SOUTH);
+            dialog.setContentPane(contenedor);
+            dialog.pack();
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+
+        } else if (mueble instanceof Silla) {
+
+            JDialog dialog = new JDialog(this, "Registrar Silla", true);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+            // campos
+            JTextField fielCodigo = new JTextField();
+            JTextField fieldDescripcion = new JTextField();
+            JTextField fieldMaterial = new JTextField();
+            JTextField fieldPrecio = new JTextField();
+            JTextField fieldColor = new JTextField();
+            JTextField fieldCantidad = new JTextField();
+            JTextField fieldMaterialTapizado = new JTextField();
+            JTextField fieldColorTapizado = new JTextField();
+            JTextField fieldDensidadEspuma = new JTextField();
+
+            // añadimos los campos
+            JPanel form = new JPanel(new GridLayout(9, 2, 5, 4));
+            form.add(new JLabel("Codigo:"));
+            form.add(fielCodigo);
+
+            form.add(new JLabel("Descripcion:"));
+            form.add(fieldDescripcion);
+            form.add(new JLabel("Material:"));
+            form.add(fieldMaterial);
+            form.add(new JLabel("Precio:"));
+            form.add(fieldPrecio);
+            form.add(new JLabel("Color:"));
+            form.add(fieldColor);
+            form.add(new JLabel("Cantidad de unidades:"));
+            form.add(fieldCantidad);
+            form.add(new JLabel("Material del tapizado:"));
+            form.add(fieldMaterialTapizado);
+            form.add(new JLabel("Color del tapizado:"));
+            form.add(fieldColorTapizado);
+            form.add(new JLabel("Densidad de la espuma:"));
+            form.add(fieldDensidadEspuma);
+
+            JButton btnGuardar = new JButton("Guardar");
+            JButton btnCancelar = new JButton("Cancelar");
+
+            btnGuardar.addActionListener(evento -> {
+                try {
+                    int codigo = Integer.parseInt(fielCodigo.getText().trim());
+                    String descripcion = fieldDescripcion.getText().trim();
+                    String material = fieldMaterial.getText().trim();
+                    double precio = Double.parseDouble(fieldPrecio.getText().trim());
+                    String color = fieldColor.getText().trim();
+                    int cantidad = Integer.parseInt(fieldCantidad.getText().trim());
+                    String materialTapizado = fieldMaterialTapizado.getText().trim();
+                    String colorTapizado = fieldColorTapizado.getText().trim();
+                    String densidadEspuma = fieldDensidadEspuma.getText().trim();
+
+                    productos.put(codigo, new Silla(codigo, descripcion, material, precio, color, cantidad,
+                            materialTapizado, colorTapizado, densidadEspuma));
+                    JOptionPane.showMessageDialog(dialog, "Silla registrada correctamente");
+                    dialog.dispose();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(dialog, "Error en los datos");
+                }
+            });
+
+            btnCancelar.addActionListener(ev -> dialog.dispose());
+
+            JPanel botones = new JPanel();
+            botones.add(btnGuardar);
+            botones.add(btnCancelar);
+
+            JPanel contenedor = new JPanel(new BorderLayout(10, 10));
+            contenedor.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+            contenedor.add(form, BorderLayout.CENTER);
+            contenedor.add(botones, BorderLayout.SOUTH);
+            dialog.setContentPane(contenedor);
+            dialog.pack();
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+
+        }
+
     }
 }
